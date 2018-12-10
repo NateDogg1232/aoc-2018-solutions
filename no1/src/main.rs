@@ -5,15 +5,22 @@ fn main() {
     let mut file = File::open("input/input.txt").expect("Could not find input file");
 
     let mut file_contents = String::new();
-    file.read_to_string(&mut file_contents).expect("Could not read file");
+    file.read_to_string(&mut file_contents)
+        .expect("Could not read file");
 
+    let mut freq_list = Vec::new();
     let mut cur_freq: i64 = 0;
-
-    for inp in file_contents.split_whitespace() {
-        //Go through each one and parse it as an int
-        let tmp_freq: i64 = inp.parse().expect("Could not parse input");
-        cur_freq += tmp_freq;
+    loop {
+        for inp in file_contents.split_whitespace() {
+            let temp_freq: i64 = inp.parse().expect("Could not parse input");
+            cur_freq += temp_freq;
+            for freq in freq_list.iter() {
+                if *freq == cur_freq {
+                    println!("{}", freq);
+                    return;
+                }
+            }
+            freq_list.push(cur_freq);
+        }
     }
-
-    println!("{}", cur_freq);
 }
