@@ -14,23 +14,29 @@ fn main() {
         claims.push(parse_claim(inp));
     }
     let mut grid: [[usize; 1000]; 1000] = [[0; 1000]; 1000];
-    for claim in claims {
+    for claim in claims.iter() {
         for x in claim.left..claim.left + claim.width {
             for y in claim.top..claim.top + claim.height {
-                grid[x][y] += 1;
+                grid[x][y] +=1;
             }
         }
     }
-    let mut total: usize = 0;
-    //Let's go through the full thingy and count exactly how many parts of it are overlapping
-    for row in grid.iter() {
-        for slot in row.iter() {
-            if *slot > 1 {
-                total += 1;
+    for claim in claims.iter_mut() {
+        for x in claim.left..claim.left + claim.width {
+            for y in claim.top..claim.top + claim.height {
+                if grid[x][y] > 1 {
+                    claim.has_overlapped = true;
+                }
             }
         }
     }
-    println!("{}", total);
+
+    for claim in claims {
+        if !claim.has_overlapped {
+            println!("{}", claim.id);
+        }
+    }
+    println!("Done");
 }
 
 #[derive(Debug)]
@@ -40,6 +46,7 @@ struct Claim {
     pub top: usize,
     pub width: usize,
     pub height: usize,
+    pub has_overlapped: bool,
 }
 impl Claim {
     pub fn new() -> Claim {
@@ -49,6 +56,7 @@ impl Claim {
             top: 0,
             width: 0,
             height: 0,
+            has_overlapped: false,
         }
     }
 }
